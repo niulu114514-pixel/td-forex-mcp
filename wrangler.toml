@@ -1,0 +1,28 @@
+name = "td-forex-mcp"
+main = "src/index.ts"
+compatibility_date = "2026-09-01"
+compatibility_flags = ["nodejs_compat"]
+keep_vars = true
+
+# ---- D1 (storage) ----
+# Twelve Data 配置缓存与 Session 现基于 Cloudflare D1，替代原 KV。
+# 将 KV 免费套餐的按次计数（热路径上每次报价/财经请求都会读写 td_health）
+# 改为 D1，避免触发用量提醒。
+#   首次建库并应用迁移：
+#   npx wrangler d1 create td-forex-mcp
+#   npx wrangler d1 migrations apply td-forex-mcp --remote
+[[d1_databases]]
+binding = "DB"
+database_name = "td-forex-mcp"
+database_id = "6bc1f253-1618-4a9c-9767-dd25bb917743"
+migrations_dir = "migrations"
+
+# Admin credentials — set in Cloudflare Dashboard > Workers > Variables/Secrets
+# [vars]
+# ADMIN_USERNAME = "admin"
+# ADMIN_PASSWORD = "your-password"
+
+[observability]
+[observability.logs]
+enabled = true
+invocation_logs = true
